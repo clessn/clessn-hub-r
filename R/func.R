@@ -23,7 +23,7 @@ configure <- function(url='https://clessn.apps.valeria.science')
     return(result)
 }
 
-refresh <- function()
+refresh_token <- function()
 {
   cat('refreshing token...\n')
   response <- httr::POST(url=paste0(config$url, '/jwtauth/refresh/'), config=config$refresh_header)
@@ -56,30 +56,109 @@ refresh <- function()
   cat('token refreshed\n')
 }
 
-
-download <- function(table)
+#' @export
+upload <- function(tablename, object)
 {
-  url <- paste0(config$url, '/data/', table)
+  url <- paste0(config$url, '/data/', tablename, '/')
   start_time <- Sys.time()
-  response <- httr::GET(url=url, config=config$access_header)
+  response <- httr::POST(url=url, body=object, config=config$access_header)
+  if (response$status_code != 201)
+  {
+    if (response$status_code == 400)
+    {
+      stop('either something failed terribly in the package or object is already online.')
+    }
+    else if (response$status_code == 401)
+    {
+      #stop('Execute configure again or refresh_token().')
+      refresh_token()
+      response <- httr::GET(url=url, config=config$access_header)
+    }
+    else if (response$status_code == 403)
+    {
+      stop('You do not have access to this table.')
+    }
+    else
+    {
+      stop(paste('Could not put object for an unknown reason. Error code ', response$status_code))
+    }
+  }
+  end_time <- Sys.time()
+  cat('\nsuccess with a ')
+  print(end_time - start_time)
+}
 
+delete <- function(tablename, uuid)
+{
+  url <- paste0(config$url, '/data/', tablename, '/', uuid)
+  start_time <- Sys.time()
+  response <- httr::DELETE(url=url, config=config$access_header)
+
+  if (response$status_code != 204)
+  {
+    if (response$status_code == 400)
+    {
+      stop('either something failed terribly in the package or object does not exist.')
+    }
+    else if (response$status_code == 401)
+    {
+      #stop('Execute configure again or refresh_token().')
+      refresh_token()
+      response <- httr::GET(url=url, config=config$access_header)
+    }
+    else if (response$status_code == 403)
+    {
+      stop('You do not have access to this table.')
+    }
+    else
+    {
+      stop(paste('Could not put object for an unknown reason. Error code ', response$status_code))
+    }
+  }
+
+  end_time <- Sys.time()
+  cat('\nsuccess with a ')
+  print(end_time - start_time)
+}
+
+#' @export
+download <- function(tablename)
+{
+  return(load(config$url, tablename, '', config$access_header, NULL))
+}
+
+#' @export
+refresh <- function(data)
+{
+  return(load(config$url, data$table, paste0('modified=', data$date), config$access_header, data))
+}
+
+load <- function(base_url, tablename, params, token, return_object)
+{
+  url <- paste0(base_url, '/data/', tablename, '/?', params)
+  start_time <- Sys.time()
+
+  # Download the first page and report the error if any
+  response <- httr::GET(url=url, config=token)
   if (response$status_code != 200)
   {
     if (response$status_code == 401)
     {
-      refresh()
+      #stop('Execute configure again.')
+      refresh_token()
       response <- httr::GET(url=url, config=config$access_header)
-      print(response$status_code)
     }
     else if (response$status_code == 403)
     {
-      stop('you are now allowed to access this table.')
+      stop('You do not have access to this table.')
     }
     else
     {
-      stop(paste('Could not find table.', response$status_code))
+      stop(paste('Could not load table for an unknown reason. Error code ', response$status_code))
     }
   }
+
+  # Initialize the content and the variables
   content <- httr::content(response)
   result <- list()
   item_count <- content$count
@@ -89,6 +168,7 @@ download <- function(table)
   current_count <- 0
   data <- NULL
 
+  # Load all pages one after this other. If the next_page is null, stop.
   while (current_count != item_count)
   {
     result <- loadPage(next_page, data)
@@ -102,6 +182,7 @@ download <- function(table)
     }
   }
 
+  # make sure all columns are UTF-8
   for (col in colnames(data))
   {
     if (typeof(data[[col]]) == 'character')
@@ -110,16 +191,35 @@ download <- function(table)
     }
   }
 
+  # Report time to download
   end_time <- Sys.time()
   cat('\nsuccess with a ')
   print(end_time - start_time)
 
-  final_result <- list()
-  final_result$df <- data
-  final_result$date <- Sys.time()
-  final_result$table <- table
+  # Create or update result object
+  if (is.null(return_object))
+  {
+    final_result <- list()
+    final_result$df <- data
+    final_result$date <- format(Sys.time(), "%Y-%m-%d")
+    final_result$table <- tablename
 
-  return(final_result)
+    return(final_result)
+  }
+  else
+  {
+    return_object$df <- merge_data(data.table::setDT(return_object$df), data.table::setDT(data))
+    return_object$date <- format(Sys.time(), "%Y-%m-%d")
+    return(return_object)
+  }
+
+}
+
+merge_data <- function(all_data, new_data)
+{
+  result <- sqldf::sqldf("SELECT * FROM all_data UNION ALL SELECT * FROM new_data");
+  result <- result[order(result[["modified"]], decreasing = TRUE), ]
+  return(result[!duplicated(result$uuid), ])
 }
 
 loadPage <- function(url, data=NULL)
@@ -129,7 +229,7 @@ loadPage <- function(url, data=NULL)
   {
     if (response$status_code == 401)
     {
-      refresh()
+      refresh_token()
       response <- httr::GET(url=url, config=config$access_header)
     }
     else
