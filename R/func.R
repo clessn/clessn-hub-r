@@ -88,6 +88,41 @@ upload <- function(tablename, object)
   print(end_time - start_time)
 }
 
+#' @export
+update <- function(tablename, uuid, data)
+{
+  url <- paste0(config$url, '/data/', tablename, '/', uuid)
+  start_time <- Sys.time()
+  response <- httr::PATCH(url=url, config=config$access_header, body=data)
+
+  if (response$status_code != 200)
+  {
+    if (response$status_code == 404)
+    {
+      stop('The object does not exist.')
+    }
+    else if (response$status_code == 401)
+    {
+      #stop('Execute configure again or refresh_token().')
+      refresh_token()
+      response <- httr::GET(url=url, config=config$access_header)
+    }
+    else if (response$status_code == 403)
+    {
+      stop('You do not have access to this table.')
+    }
+    else
+    {
+      stop(paste('Could not put object for an unknown reason. Error code ', response$status_code))
+    }
+  }
+
+  end_time <- Sys.time()
+  cat('\nsuccess with a ')
+  print(end_time - start_time)
+}
+
+#' @export
 delete <- function(tablename, uuid)
 {
   url <- paste0(config$url, '/data/', tablename, '/', uuid)
@@ -112,7 +147,7 @@ delete <- function(tablename, uuid)
     }
     else
     {
-      stop(paste('Could not put object for an unknown reason. Error code ', response$status_code))
+      stop(paste('Could not delete object for an unknown reason. Error code ', response$status_code))
     }
   }
 
