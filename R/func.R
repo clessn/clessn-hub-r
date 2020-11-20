@@ -91,7 +91,7 @@ upload <- function(tablename, object)
 #' @export
 update <- function(tablename, uuid, data)
 {
-  url <- paste0(config$url, '/data/', tablename, '/', uuid)
+  url <- paste0(config$url, '/data/', tablename, '/', uuid, '/')
   start_time <- Sys.time()
   response <- httr::PATCH(url=url, config=config$access_header, body=data)
 
