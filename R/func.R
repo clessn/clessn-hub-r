@@ -113,6 +113,7 @@ update <- function(tablename, uuid, data)
     }
     else
     {
+      print(response)
       stop(paste('Could not put object for an unknown reason. Error code ', response$status_code))
     }
   }
