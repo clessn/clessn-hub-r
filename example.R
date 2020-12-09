@@ -1,24 +1,42 @@
-devtools::install_gihhub("clessn/clessn-hub-r")
+devtools::install_github("clessn/clessn-hub-r")
 # https://github.com/clessn/quorum-api/issues/126
 
 # ------------------------------
 # Configure the connection
-clessnhub::configure()
-
-# Download the current data
-table_name <- 'quorum_charts'
-charts <- clessnhub::download(table_name)
-
-chart_id <- charts$df[which(charts$df$chart_name == "quorum-chart-radarplus"), ]$uuid
-
-new_data <- list(points = '[1, 2, 3, 4]')
-clessnhub::update(table_name, chart_id, new_data)
+clessnhub::configure("http://localhost:8000")
+# or (NEVER PUT THIS ON GITHUB)
+clessnhub::login('myusername', '******', 'http://localhost:8000')
 
 
+# Get a list of all table names
+tablenames <- clessnhub::fetch_tablenames()
 
-# ------------------------------
-#data <- clessnhub::refresh(data)
-#clessnhub::refresh_token()
-#clessnhub::delete(table, 'b063902e-f866-46ac-a303-5d03c4216692')
 
+# Download a table into a tibble
+charts <- clessnhub::download_table('quorum_answers')
+
+
+# Return an empty tibble of a table with all columns
+# NOT IMPLEMENTED YET
+table_schema <- clessnhub::fetch_tableschema('quorum_answers')
+
+
+# Returns TRUE if an item with the specified uuid exists
+clessnhub::item_exists('095c1582-4301-4cbc-a8e6-d5e8f58a44fa', 'quorum_answers')
+
+
+# Get ONE specific element from a table in named list format
+item <- clessnhub::get_item('095c1582-4301-4cbc-a8e6-d5e8f58a44fa', 'quorum_answers')
+
+
+## Delete an item from the table
+clessnhub::delete_item('80af0dd9-dc8b-4881-bccd-d9e570738675', 'quorum_answers')
+
+
+# Create a new item in a table, then return it in list format
+newitem <- clessnhub::create_item(item, 'quorum_answers')
+
+
+# Edit an existing item in a table, return the new item in list format
+clessnhub::edit_item(newitem$uuid, item, 'quorum_answers')
 
