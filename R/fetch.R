@@ -16,7 +16,7 @@ fetch_tablenames <- function()
     stop('an error occured in fetch_tablenames. Contact an administrator.')
   }
   tables <- httr::content(response)
-  cat('success/n')
+  cat('success')
   return(names(tables))
 }
 
@@ -73,7 +73,7 @@ delete_item <- function(uuid, tablename)
   }
   else if(response$status_code == 204)
   {
-    cat('success/n')
+    cat('success')
   }
   else
   {
@@ -96,7 +96,7 @@ get_item <- function(uuid, tablename)
   {
     stop(paste0('get_item failed with error code ', response$status_code))
   }
-  cat('success/n')
+  cat('success')
   return(httr::content(response))
 }
 
@@ -109,14 +109,15 @@ download_table <- function(tablename)
   url <- configuration$url
   response <- call_or_refresh(function()
   {
-    return(httr::GET(url=paste0(url, suburl), config=build_header(configuration$token)))
+    cap_speed <- httr::config(max_recv_speed_large = 10000)
+    return(httr::GET(url=paste0(url, suburl), config=build_header(configuration$token), httr::write_disk('table.csv', overwrite=TRUE), httr::progress(), cap_speed))
   })
   if (response$status_code != 200)
   {
     stop(paste0('download_table failed with error code ', response$status_code, ". you can manually download the table by visiting ", paste0(url, suburl)))
   }
-  cat('success/n')
-  return(httr::content(response))
+  cat('success')
+  return(read.csv('table.csv'))
 }
 
 #'
@@ -134,7 +135,7 @@ create_item <- function(item, tablename)
   {
     stop(paste0('create_item failed with error code ', response$status_code))
   }
-  cat('success/n')
+  cat('success')
   return(httr::content(response))
 }
 
@@ -153,6 +154,6 @@ edit_item <- function(uuid, item, tablename)
   {
     stop(paste0('edit_item failed with error code ', response$status_code))
   }
-  cat('success/n')
+  cat('success')
   return(httr::content(response))
 }

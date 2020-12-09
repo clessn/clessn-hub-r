@@ -26,7 +26,7 @@ login <- function(username, password, url='https://clessn.apps.valeria.science')
   }
   token <- httr::content(response)$token
   configuration <<- list(token=token, url=url)
-  cat('success\n')
+  cat('success')
 }
 
 #'
@@ -37,16 +37,11 @@ login <- function(username, password, url='https://clessn.apps.valeria.science')
 #' @export
 call_or_refresh <- function(call)
 {
+  configuration$token <- refresh_token(configuration$token, configuration$url)
   response <- call()
   if (response$status_code == 403)
   {
-    configuration$token <- refresh_token(configuration$token, configuration$url)
-    response <- call()
-    if (response$status_code == 403)
-    {
       stop('You do not have access to this resource')
-    }
-    return(response)
   }
   return(response)
 }
