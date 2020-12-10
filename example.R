@@ -3,9 +3,10 @@ devtools::install_github("clessn/clessn-hub-r")
 
 # ------------------------------
 # Configure the connection
+clessnhub::configure()
 clessnhub::configure("http://localhost:8000")
 # or (NEVER PUT THIS ON GITHUB)
-clessnhub::login('myusername', '******', 'http://localhost:8000')
+clessnhub::login('myusername', '******')
 
 
 # Get a list of all table names
@@ -13,7 +14,7 @@ tablenames <- clessnhub::fetch_tablenames()
 
 
 # Download a table into a tibble
-charts <- clessnhub::download_table('quorum_answers')
+charts <- clessnhub::download_table('quorum_charts')
 
 
 # Return an empty tibble of a table with all columns

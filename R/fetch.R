@@ -9,6 +9,7 @@ fetch_tablenames <- function()
   response <- call_or_refresh(function()
   {
     return(httr::GET(url=paste0(url, suburl), config=build_header(configuration$token)))
+
   })
   if (response$status_code != 200)
   {
@@ -107,15 +108,22 @@ download_table <- function(tablename)
 {
   suburl <- paste0("/data/", tablename, "/download/")
   url <- configuration$url
+  httr::set_config(httr::config(ssl_verifypeer = 0L))
   response <- call_or_refresh(function()
   {
-    cap_speed <- httr::config(max_recv_speed_large = 10000)
-    return(httr::GET(url=paste0(url, suburl), config=build_header(configuration$token), httr::write_disk('table.csv', overwrite=TRUE), httr::progress(), cap_speed))
+    return(httr::GET(
+    url=paste0(url, suburl),
+    config=build_header(configuration$token),
+    httr::add_headers(Accept='*/*'),
+    httr::write_disk('table.csv', overwrite=TRUE),
+    httr::progress(),
+    httr::verbose(ssl=TRUE, info=TRUE)
+    ))
   })
-  if (response$status_code != 200)
-  {
-    stop(paste0('download_table failed with error code ', response$status_code, ". you can manually download the table by visiting ", paste0(url, suburl)))
-  }
+  #if (response$status_code != 200)
+  #{
+  #  stop(paste0('download_table failed with error code ', response$status_code, ". you can manually download the table by visiting ", paste0(url, suburl)))
+  #}
   cat('success')
   return(read.csv('table.csv'))
 }
