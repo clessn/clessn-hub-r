@@ -116,8 +116,8 @@ download_table <- function(tablename)
     config=build_header(configuration$token),
     httr::add_headers(Accept='*/*'),
     httr::write_disk('table.csv', overwrite=TRUE),
-    httr::progress(),
-    httr::verbose(ssl=TRUE, info=TRUE)
+    httr::progress()
+    #httr::verbose(ssl=TRUE, info=TRUE)
     ))
   })
   #if (response$status_code != 200)
