@@ -4,7 +4,7 @@ devtools::install_github("clessn/clessn-hub-r")
 # ------------------------------
 # Configure the connection
 clessnhub::configure()
-clessnhub::configure("http://localhost:8000")
+
 # or (NEVER PUT THIS ON GITHUB)
 clessnhub::login('myusername', '******')
 
