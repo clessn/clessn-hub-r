@@ -111,21 +111,30 @@ download_table <- function(tablename)
   httr::set_config(httr::config(ssl_verifypeer = 0L))
   response <- call_or_refresh(function()
   {
-    return(httr::GET(
-    url=paste0(url, suburl),
-    config=build_header(configuration$token),
-    httr::add_headers(Accept='*/*'),
-    httr::write_disk('table.csv', overwrite=TRUE),
-    httr::progress()
-    #httr::verbose(ssl=TRUE, info=TRUE)
-    ))
+    tryCatch({
+        httr::GET(
+          url=paste0(url, suburl),
+          config=build_header(configuration$token),
+          httr::add_headers(Accept='*/*'),
+          httr::write_disk('table.csv', overwrite=TRUE),
+          httr::progress())
+    },
+    error=function(cond)
+    {
+      if (grepl("receiving data from the peer", cond, fixed=T))
+      {
+        return(NA)
+      }
+      stop(cond)
+    })
   })
-  #if (response$status_code != 200)
-  #{
-  #  stop(paste0('download_table failed with error code ', response$status_code, ". you can manually download the table by visiting ", paste0(url, suburl)))
-  #}
-  cat('success')
-  return(read.csv('table.csv'))
+  if ((is.atomic(response) && is.na(response)) || response$status_code == 200)
+  {
+    cat('success')
+    return(read.csv('table.csv'))
+  }
+  stop(paste0('download_table failed with error code ', response$status_code))
+
 }
 
 #'

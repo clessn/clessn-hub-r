@@ -39,6 +39,10 @@ call_or_refresh <- function(call)
 {
   configuration$token <- refresh_token(configuration$token, configuration$url)
   response <- call()
+  if (is.atomic(response) && is.na(response))
+  {
+    return(NA)
+  }
   if (response$status_code == 403)
   {
       stop('You do not have access to this resource')
