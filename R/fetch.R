@@ -131,7 +131,9 @@ download_table <- function(tablename)
   if ((is.atomic(response) && is.na(response)) || response$status_code == 200)
   {
     cat('success')
-    return(read.csv('table.csv'))
+    data <- read.csv('table.csv')
+    file.remove('table.csv')
+    return(data)
   }
   stop(paste0('download_table failed with error code ', response$status_code))
 
