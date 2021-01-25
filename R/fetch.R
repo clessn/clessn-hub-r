@@ -104,7 +104,7 @@ get_item <- function(uuid, tablename)
 #'
 #'
 #' @export
-download_table <- function(tablename)
+download_table <- function(tablename, stringsAsFactors=FALSE)
 {
   suburl <- paste0("/data/", tablename, "/download/")
   url <- configuration$url
@@ -131,7 +131,7 @@ download_table <- function(tablename)
   if ((is.atomic(response) && is.na(response)) || response$status_code == 200)
   {
     cat('success')
-    data <- read.csv('table.csv')
+    data <- read.csv('table.csv', stringsAsFactors=stringsAsFactors)
     file.remove('table.csv')
     return(data)
   }
