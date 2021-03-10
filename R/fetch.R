@@ -101,7 +101,67 @@ get_item <- function(uuid, tablename)
   return(httr::content(response))
 }
 
+#' Download data through the API, one page at a time. Easy on the server,
+#' heavy on the client.
 #'
+#' @export
+download_light <- function(tablename, stringsAsFactors=FALSE)
+{
+
+
+  suburl <- paste0("/data/", tablename)
+  url <- configuration$url
+  httr::set_config(httr::config(ssl_verifypeer = 0L))
+  page <- 1
+  count <- 0
+  data <- list()
+
+  response <- call_or_refresh(function()
+  {
+    return(httr::GET(
+      url=paste0(url, suburl, "/?page=", page),
+      config=build_header(configuration$token),
+      httr::add_headers(Accept='*/*')))
+  })
+
+  while (TRUE)
+  {
+    response <- httr::GET(
+      url=paste0(url, suburl, "/?page=", page),
+      config=build_header(configuration$token),
+      httr::add_headers(Accept='*/*'))
+    if (response$status_code != 200)
+    {
+      if (response$status_code == 403)
+      {
+        stop("Error while downloading. Try logging in again through configure()")
+      }
+      stop(paste0('download_table failed with error code ', response$status_code))
+    }
+    else
+    {
+      content = httr::content(response)
+      count <- content$count
+      items <- content$results
+
+      data <- c(data, items)
+      cat("\r", paste0(length(data), "/", count))
+
+      if (!is.null(content[["next"]]))
+      {
+        page <- page + 1
+      }
+      else
+      {
+        cat("success")
+        return(data.table::rbindlist(data))
+      }
+    }
+  }
+}
+
+#' Download data as csv, where the server generates the csv. Heavy on the
+#' server, easy on the client.
 #'
 #' @export
 download_table <- function(tablename, stringsAsFactors=FALSE)
@@ -135,7 +195,7 @@ download_table <- function(tablename, stringsAsFactors=FALSE)
     file.remove('table.csv')
     return(data)
   }
-  stop(paste0('download_table failed with error code ', response$status_code))
+  stop(paste0('download_csv failed with error code ', response$status_code))
 
 }
 
