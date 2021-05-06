@@ -3,7 +3,7 @@ devtools::install_github("clessn/clessn-hub-r")
 
 # ------------------------------
 # se connecter au hub 2.0
-clessnhub::connect()
+clessnhub::connect(url="localhost:8080")
 
 # ou (dans la console seulement, ne pas pousser son identifiant sur github)
 clessnhub::login('myusername', '******')

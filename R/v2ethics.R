@@ -10,12 +10,25 @@ list_databanks <- function()
 
 list_databank_permissions <- function(databank)
 {
-  # somehow fetch the user's permissions for the current databank
+
+  response <- http_get(paste0("/ethics/permissions/?table=", databank), verify=F)
+  if (response$status_code == 404)
+  {
+    warning("Vous n'avez aucune permission pour cette banque de données. Contactez un administrateur.")
+    return(NULL)
+  }
+  if (response$status_code == 200)
+  {
+    return(httr::content(response))
+  }
+  stop("Une erreur s'est produite.")
+
 }
 
 list_databank_filters <- function(databank)
 {
   # somehow list all possible filter parameters for the given table
+  stop("Cette fonction n'est pas implémentée")
 }
 
 get_databank_items <- function(databank, filters=list())
