@@ -22,10 +22,10 @@ Le format de chaque table est indentique jusqu'à un certain point. On y retrouv
 * `schema`: ce champ sert d'indicateur de la structure et le format du champ data.
 
 Supposons une table de personnes qui contient l'élément suivant:
-`key`: `francois_legault`
-`type`: `politician`
-`schema`: `v1`
-`data`:
+* `key`: `francois_legault`
+* `type`: `politician`
+* `schema`: `v1`
+* `data`:
 ```json
 {
     "first_name": "François",
