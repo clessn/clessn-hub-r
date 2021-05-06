@@ -3,6 +3,7 @@
 #' @export
 fetch_tablenames <- function()
 {
+  warning("cette fonction sera bientôt retirée. Utilisez clessnhub::list_tables() pour visualiser les tables du hub 2.0")
   suburl <- "/data/"
   url <- configuration$url
 
@@ -21,20 +22,13 @@ fetch_tablenames <- function()
   return(names(tables))
 }
 
-#'
-#'
-#' @export
-fetch_tableschema <- function(tablename)
-{
-  # somehow find a way to return the fields of the specified table
-  stop('not implemented')
-}
 
 #' return whether the specified uuid is in tablename
 #'
 #' @export
 item_exists <- function(uuid, tablename)
 {
+  warning("cette fonction sera bientôt retirée. Utilisez clessnhub::get_items() avec filtre pour valider si un élément existe")
   suburl <- paste0("/data/", tablename, "/", uuid, "/")
   url <- configuration$url
 
@@ -59,8 +53,9 @@ item_exists <- function(uuid, tablename)
 #' delete the item uuid in tablename
 #'
 #' @export
-delete_item <- function(uuid, tablename)
+delete_itemv1 <- function(uuid, tablename)
 {
+  warning("cette fonction sera bientôt retirée. Utilisez clessnhub::delete_item() pour supprimer un élément")
   suburl <- paste0("/data/", tablename, "/", uuid, "/")
   url <- configuration$url
 
@@ -87,6 +82,7 @@ delete_item <- function(uuid, tablename)
 #' @export
 get_item <- function(uuid, tablename)
 {
+  warning("cette fonction sera bientôt retirée. Utilisez clessnhub::get_items() avec filtre pour sélectionner un élément")
   suburl <- paste0("/data/", tablename, "/", uuid, "/")
   url <- configuration$url
   response <- call_or_refresh(function()
@@ -107,7 +103,7 @@ get_item <- function(uuid, tablename)
 #' @export
 download_light <- function(tablename, stringsAsFactors=FALSE)
 {
-
+  warning("cette fonction sera bientôt retirée. Utilisez clessnhub::get_items() avec filtre pour sélectionner des éléments")
 
   suburl <- paste0("/data/", tablename)
   url <- configuration$url
@@ -166,6 +162,7 @@ download_light <- function(tablename, stringsAsFactors=FALSE)
 #' @export
 download_table <- function(tablename, stringsAsFactors=FALSE)
 {
+  warning("cette fonction sera bientôt retirée. Utilisez clessnhub::get_items() avec filtre pour sélectionner des éléments")
   suburl <- paste0("/data/", tablename, "/download/")
   url <- configuration$url
   httr::set_config(httr::config(ssl_verifypeer = 0L))
@@ -202,8 +199,9 @@ download_table <- function(tablename, stringsAsFactors=FALSE)
 #'
 #'
 #' @export
-create_item <- function(item, tablename)
+create_itemv1 <- function(item, tablename)
 {
+  warning("cette fonction sera bientôt retirée. Utilisez clessnhub::create_item() pour créer un élément")
   suburl <- paste0("/data/", tablename, "/")
   url <- configuration$url
   response <- call_or_refresh(function()
@@ -223,6 +221,7 @@ create_item <- function(item, tablename)
 #' @export
 edit_item <- function(uuid, item, tablename)
 {
+  warning("cette fonction sera bientôt retirée.")
   suburl <- paste0("/data/", tablename, "/", uuid, "/")
   url <- configuration$url
   response <- call_or_refresh(function()
