@@ -1,4 +1,4 @@
-# CLESSN Hub R package
+# CLESSN Hub R package (v1)
 
 ## Documentation
 install with `devtools::install_gihhub("clessn/clessn-hub-r")`
