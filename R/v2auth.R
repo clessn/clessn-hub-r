@@ -1,6 +1,6 @@
 #'
 #' @export
-login <- function(username, password, url="https://hub.clessn.apps.valeria.science")
+login <- function(username, password, url="https://clessnhub.apps.valeria.science")
 {
   message(paste0("connexion à ", url, " en cours..."))
   httr::set_config(httr::config(ssl_verifypeer = 0L))
@@ -23,7 +23,7 @@ login <- function(username, password, url="https://hub.clessn.apps.valeria.scien
 
 #'
 #' @export
-connect <- function(url="https://hub.clessn.apps.valeria.science")
+connect <- function(url="https://clessnhub.apps.valeria.science")
 {
   username <- getPass::getPass("Nom d'utilisateur: ")
   password <- getPass::getPass("Mot de passe: ")
