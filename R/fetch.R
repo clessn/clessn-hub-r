@@ -1,40 +1,10 @@
-#'
-#'
-#' @export
-fetch_tablenames <- function()
-{
-  suburl <- "/data/"
-  url <- configuration$url
-
-  response <- call_or_refresh(function()
-  {
-    return(httr::GET(url=paste0(url, suburl), config=build_header(configuration$token)))
-
-  })
-  if (response$status_code != 200)
-  {
-    cat(response$status_code)
-    stop('an error occured in fetch_tablenames. Contact an administrator.')
-  }
-  tables <- httr::content(response)
-  cat('success')
-  return(names(tables))
-}
-
-#'
-#'
-#' @export
-fetch_tableschema <- function(tablename)
-{
-  # somehow find a way to return the fields of the specified table
-  stop('not implemented')
-}
 
 #' return whether the specified uuid is in tablename
 #'
 #' @export
-item_exists <- function(uuid, tablename)
+v1_item_exists <- function(uuid, tablename)
 {
+  warning("cette fonction sera bientôt retirée.")
   suburl <- paste0("/data/", tablename, "/", uuid, "/")
   url <- configuration$url
 
@@ -59,8 +29,9 @@ item_exists <- function(uuid, tablename)
 #' delete the item uuid in tablename
 #'
 #' @export
-delete_item <- function(uuid, tablename)
+v1_delete_item <- function(uuid, tablename)
 {
+  warning("cette fonction sera bientôt retirée.")
   suburl <- paste0("/data/", tablename, "/", uuid, "/")
   url <- configuration$url
 
@@ -85,8 +56,9 @@ delete_item <- function(uuid, tablename)
 #' return the specified uuid from tablename
 #'
 #' @export
-get_item <- function(uuid, tablename)
+v1_get_item <- function(uuid, tablename)
 {
+  warning("cette fonction sera bientôt retirée.")
   suburl <- paste0("/data/", tablename, "/", uuid, "/")
   url <- configuration$url
   response <- call_or_refresh(function()
@@ -105,9 +77,9 @@ get_item <- function(uuid, tablename)
 #' heavy on the client.
 #'
 #' @export
-download_light <- function(tablename, stringsAsFactors=FALSE)
+v1_download_light <- function(tablename, stringsAsFactors=FALSE)
 {
-
+  warning("cette fonction sera bientôt retirée.")
 
   suburl <- paste0("/data/", tablename)
   url <- configuration$url
@@ -164,8 +136,9 @@ download_light <- function(tablename, stringsAsFactors=FALSE)
 #' server, easy on the client.
 #'
 #' @export
-download_table <- function(tablename, stringsAsFactors=FALSE)
+v1_download_table <- function(tablename, stringsAsFactors=FALSE)
 {
+  warning("cette fonction sera bientôt retirée.")
   suburl <- paste0("/data/", tablename, "/download/")
   url <- configuration$url
   httr::set_config(httr::config(ssl_verifypeer = 0L))
@@ -202,8 +175,9 @@ download_table <- function(tablename, stringsAsFactors=FALSE)
 #'
 #'
 #' @export
-create_item <- function(item, tablename)
+v1_create_item <- function(item, tablename)
 {
+  warning("cette fonction sera bientôt retirée.")
   suburl <- paste0("/data/", tablename, "/")
   url <- configuration$url
   response <- call_or_refresh(function()
@@ -221,8 +195,9 @@ create_item <- function(item, tablename)
 #'
 #'
 #' @export
-edit_item <- function(uuid, item, tablename)
+v1_edit_item <- function(uuid, item, tablename)
 {
+  warning("cette fonction sera bientôt retirée.")
   suburl <- paste0("/data/", tablename, "/", uuid, "/")
   url <- configuration$url
   response <- call_or_refresh(function()

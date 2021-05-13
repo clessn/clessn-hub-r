@@ -1,64 +1,68 @@
-# CLESSN Hub R package
+# CLESSN Hub R package (v2)
 
-## Documentation
-install with `devtools::install_gihhub("clessn/clessn-hub-r")`
+## Concepts
+Il existe deux sortes de tables:
+* les tables de données (data), pour les données non-sensibles
+* les banques de données (ethics), pour les données sensibles
 
-## Usage
+les banques de données ne sont accessibles que par les personnes autorisées et possèdent chacunes leur structure unique.
+Les tables, elles, ont toutes une structure générale similaire:
+* key: une clé unique afin de permettre d'identifier les éléments (francois_legault01)
+* type: le type de la données, permet de classifier différents types dans une même table (ex. Journaliste vs Député vs Ministre)
+* metadata: De l'information sur la donnée, optionnel, au format JSON (ex: created_by, last_modified)
+* data: Les données, au format JSON (ex: first_name, last_name, source, party)
+* schema: un identifiant qui indique la structure des données et des métadonnées (ex: v1, journalist_v1)
+
+Note: Malgré la mention de JSON, les données téléchargées sont applaties en un tibble. Ce n'est que lors de la modification ou la création de données que le JSON est nécessaire. Le package jsonlite est particulièrement pertinent.
+
+
+## Support v1
+Il est encore possible d'accéder au ancien hub, mais le nom des fonctions a changé.
+ie: v1_configure, v1_login, v1_download_table, v1_download_light, etc.
+
+## Exemples
 ```
-# Configure the connection
-clessnhub::configure()
-# or (NEVER PUT THIS ON GITHUB)
+devtools::install_github("clessn/clessn-hub-r")
+# https://github.com/clessn/quorum-api/issues/126
+
+# ------------------------------
+# se connecter au hub 2.0
+clessnhub::connect()
+
+# ou (dans la console seulement, ne pas pousser son identifiant sur github)
 clessnhub::login('myusername', '******')
 
+# lister toutes les tables disponibles
+tablenames <- clessnhub::list_tables()
 
-# Get a list of all table names
-tablenames <- clessnhub::fetch_tablenames()
+# créer un filtre
+key_filter <- clessnhub::create_filter(key="mykey")
+uuid_filter <- clessnhub::create_filter(uuid="2a16f388-a3c7-4e12-8190-dd42f1c247ea")
+other_filter <- clessnhub::create_filter(type="MemberParliament", schema = "v1")
 
+jsondata_filter <- clessnhub::create_filter(data=list(potato="tomato", objects__banana="fun"))
+# Matcherait cette structure
+# {
+#   "potato": "tomato",
+#   "objects": {"banana": "fun"}
+# }
+#
 
-# Download a table into a tibble
-charts <- clessnhub::download_table('quorum_answers')
+# récupérer un éléement
+journalist_filter <- clessnhub::create_filter(data=list(gender="female", source="radio-canada"))
+journalists <- clessnhub::get_items("warehouse_journalists", journalist_filter)
 
+# créer un nouvel élément
+nouveau_journaliste <- clessnhub::create_item("warehouse_journalists", "bob", "Journalist", "v1", list(gender="male", source="radio-canada"))
 
-# Return an empty tibble of a table with all columns
-# NOT IMPLEMENTED YET
-table_schema <- clessnhub::fetch_tableschema('quorum_answers')
+# est-ce que l'élément existe?
+bob_filter <- clessnhub::create_filter(key="bob")
+clessnhub::get_items("warehouse_journalists", bob_filter)
+bob_exists <- !is.null(clessnhub::get_items("warehouse_journalists", bob_filter))
+print(bob_exists)
 
+# supprimer un élément
+clessnhub::delete_item("warehouse_journalists", "bob")
 
-# Returns TRUE if an item with the specified uuid exists
-clessnhub::item_exists('095c1582-4301-4cbc-a8e6-d5e8f58a44fa', 'quorum_answers')
-
-
-# Get ONE specific element from a table in named list format
-item <- clessnhub::get_item('095c1582-4301-4cbc-a8e6-d5e8f58a44fa', 'quorum_answers')
-
-
-## Delete an item from the table
-clessnhub::delete_item('80af0dd9-dc8b-4881-bccd-d9e570738675', 'quorum_answers')
-
-
-# Create a new item in a table, then return it in list format
-newitem <- clessnhub::create_item(item, 'quorum_answers')
-
-
-# Edit an existing item in a table, return the new item in list format
-clessnhub::edit_item(newitem$uuid, item, 'quorum_answers')
 ```
 
-## Use cases
-Change the type of a potato "lovely-potato" in the table my-potatoes
-```
-# login
-clessnhub::configure()
-
-# download the table
-potato_table <- clessnhub::download_table('my-potatoes')
-
-# find the potato named 'lovely-potato' and convert it as a list
-lovely_potato <- as.list(potato_table[which(potato_table$name == 'lovely-potato'), ])
-
-# modify the potato's type
-lovely_potato$type = 'King Potato'
-
-# reupload the potato using its uuid
-clessnhub::edit_item(lovely_potato$uuid, lovely_potato, 'my-potatoes)
-```
