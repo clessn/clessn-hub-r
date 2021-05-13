@@ -3,12 +3,12 @@
 #'
 #'
 #' @export
-configure <- function(url='https://clessn.apps.valeria.science')
+v1_configure <- function(url='https://clessn.apps.valeria.science')
 {
   warning("cette fonction sera bientôt retirée. Utilisez clessnhub::connect() pour vous connecter au hub 2.0")
   username <- getPass::getPass('clessnhub username: ')
   password <- getPass::getPass('clessnhub password: ')
-  login(username, password, url)
+  v1_login(username, password, url)
 }
 
 #'
@@ -16,7 +16,7 @@ configure <- function(url='https://clessn.apps.valeria.science')
 #'
 #'
 #' @export
-loginv1 <- function(username, password, url='https://clessn.apps.valeria.science')
+v1_login <- function(username, password, url='https://clessn.apps.valeria.science')
 {
   warning("cette fonction sera bientôt retirée. Utilisez clessnhub::login() pour vous connecter au hub 2.0")
   suburl <- "/api-token-auth/"

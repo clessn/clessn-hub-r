@@ -15,4 +15,6 @@ Imports:
     rjson,
     getPass,
     sqldf,
-    readr
+    readr,
+    dplyr,
+    jsonlite
