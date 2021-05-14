@@ -88,7 +88,7 @@ get_items <- function(table, filter=list(page=1), download_data=TRUE)
     filter$page <- page
     response <- http_get(paste0("/data/", table, "/"), options=filter)
     code <- response$status_code
-    if (code != 200)
+    if (code == 404)
     {
       cat("\n")
       break

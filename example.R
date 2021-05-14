@@ -26,10 +26,10 @@ jsondata_filter <- clessnhub::create_filter(data=list(eventID="alpha", intervent
 
 # récupérer un éléement
 journalist_filter <- clessnhub::create_filter(data=list(gender="female", source="radio-canada"))
-journalists <- clessnhub::get_items("warehouse_journalists", download_data = F)
+journalists <- clessnhub::get_items("persons", download_data = F)
 
 # créer un nouvel élément
-nouveau_journaliste <- clessnhub::create_item("warehouse_journalists", "bob", "Journalist", "v1", list(tags=list(coffee="", tea="")), list(gender="male", source="radio-canada"))
+nouveau_journaliste <- clessnhub::create_item("persons", "bob", "Journalist", "v1", list(tags=list(coffee="", tea="")), list(gender="male", source="radio-canada"))
 
 # est-ce que l'élément existe?
 bob_filter <- clessnhub::create_filter(metadata=list(tags__tea=""))
@@ -42,3 +42,32 @@ clessnhub::edit_item("warehouse_journalists", "bob", type="Politician")
 
 # supprimer un élément
 clessnhub::delete_item("warehouse_journalists", "bob")
+
+#
+#
+# Accès aux banques de données
+#
+#
+
+# se connecter au hub 2.0
+clessnhub::connect()
+
+# Voir la liste des banques de données accessibles
+clessnhub::list_databanks()
+
+# Voir la liste des permissions que nous avons sur une banque
+clessnhub::list_databank_permissions("quorum_respondents")
+
+# télécharger les données d'une banque
+data <- clessnhub::get_databank_items("quorum_respondents", filter=list(days=2))
+
+# quorum_respondents filters
+user_id = list(user_id="c70e08c8-b779-445e-a58f-984000847537")
+last_30_days = list(days=30)
+prod_only = list(origin="prod")
+engineers_only = list(profile_data__selected_profile="engineer")
+french_only = list(answer_data__ses_lang__answer_value="french")
+
+data <- clessnhub::get_databank_items("quorum_respondents", filter=list(days=19))
+
+

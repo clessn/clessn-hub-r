@@ -31,7 +31,7 @@ list_databank_filters <- function(databank)
   stop("Cette fonction n'est pas implémentée")
 }
 
-get_databank_items <- function(databank, filters=list())
+get_databank_items <- function(databank, filter=list())
 {
   filter$format <- "json"
 
@@ -65,16 +65,17 @@ get_databank_items <- function(databank, filters=list())
 
   repeat {
     filter$page <- page
-    response <- http_get(paste0("/ethics/", table, "/"), options=filter, verify=F)
+    response <- http_get(paste0("/ethics/", databank, "/"), options=filter, verify=F)
     code <- response$status_code
-    if (code != 200)
+    if (code == 404)
     {
       cat("\n")
       break
     }
     else
     {
-      downloaded_data <- suppressMessages(httr::content(response))
+      downloaded_data <- suppressMessages(readr::read_csv(httr::content(response, "text"), na="anonymized", quoted_na=F))
+
       data <- dplyr::bind_rows(data, downloaded_data)
       page <- page + 1
       cat("\r", paste0(nrow(data), "/", count))

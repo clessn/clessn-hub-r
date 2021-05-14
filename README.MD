@@ -21,7 +21,7 @@ Il est encore possible d'accéder au ancien hub, mais le nom des fonctions a cha
 ie: v1_configure, v1_login, v1_download_table, v1_download_light, etc.
 
 ## Exemples
-```
+```r
 devtools::install_github("clessn/clessn-hub-r")
 # https://github.com/clessn/quorum-api/issues/126
 
@@ -66,3 +66,17 @@ clessnhub::delete_item("warehouse_journalists", "bob")
 
 ```
 
+### Accéder à une banque de données
+```r
+# se connecter au hub 2.0
+clessnhub::connect()
+
+# Voir la liste des banques de données accessibles
+clessnhub::list_databanks()
+
+# Voir la liste des permissions que nous avons sur une banque
+clessnhub::list_databank_permissions("quorum_respondents")
+
+# télécharger les données d'une banque
+data <- clessnhub::get_databank_items("quorum_respondents", filters=list(days=2))
+```
