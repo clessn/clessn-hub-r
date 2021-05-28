@@ -23,25 +23,30 @@ jsondata_filter <- clessnhub::create_filter(data=list(eventID="alpha", intervent
 # }
 #
 
+# filtrer pat date (YYYY-MM-DD)
+between_dates_filter = clessnhub::create_filter()
+
 
 # récupérer un éléement
 journalist_filter <- clessnhub::create_filter(data=list(gender="female", source="radio-canada"))
 journalists <- clessnhub::get_items("persons", download_data = F)
 
+jeanpierre_filter <- clessnhub::create_filter(metadata = list(verifie_par="Jean-Pierre"))
+
 # créer un nouvel élément
-nouveau_journaliste <- clessnhub::create_item("persons", "bob", "Journalist", "v1", list(tags=list(coffee="", tea="")), list(gender="male", source="radio-canada"))
+nouveau_journaliste <- clessnhub::create_item("persons", "bob", "Journalist", "v1", "1990-04-30", list(tags=list(coffee="", tea="")), list(gender="male", source="radio-canada"))
 
 # est-ce que l'élément existe?
 bob_filter <- clessnhub::create_filter(metadata=list(tags__tea=""))
-bob <- clessnhub::get_items("warehouse_journalists", bob_filter)
-bob_exists <- !is.null(clessnhub::get_items("warehouse_journalists", bob_filter, download_data = F))
+bob <- clessnhub::get_items("persons", bob_filter)
+bob_exists <- !is.null(clessnhub::get_items("persons", bob_filter, download_data = F))
 print(bob_exists)
 
 # modifier un élément
-clessnhub::edit_item("warehouse_journalists", "bob", type="Politician")
+clessnhub::edit_item("persons", "bob", type="Politician")
 
 # supprimer un élément
-clessnhub::delete_item("warehouse_journalists", "bob")
+clessnhub::delete_item("persons", "bob")
 
 #
 #

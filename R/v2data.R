@@ -13,7 +13,7 @@ list_tables <- function()
 
 #'
 #' @export
-create_filter <- function(key_contains=NULL, key=NULL, uuid=NULL, type=NULL, type_contains=NULL, schema=NULL, schema_contains=NULL, metadata=list(), data=list())
+create_filter <- function(key_contains=NULL, key=NULL, uuid=NULL, type=NULL, type_contains=NULL, schema=NULL, schema_contains=NULL, date_after=NULL, date_before=NULL, metadata=list(), data=list())
 {
   filter <- list()
   if (!is.null(key_contains))
@@ -36,6 +36,12 @@ create_filter <- function(key_contains=NULL, key=NULL, uuid=NULL, type=NULL, typ
 
   if (!is.null(schema_contains))
     filter$schema_contains <- schema_contains
+
+  if (!is.null(date_after))
+    filter$date_after <- date_after
+
+  if (!is.null(date_before))
+    filter$date_before <- date_before
 
   if (length(data) > 0)
     filter$data <- paste0(names(data), data, sep=":", collapse=',')
@@ -108,11 +114,11 @@ get_items <- function(table, filter=list(page=1), download_data=TRUE)
 
 #'
 #' @export
-create_item <- function(table, key, type, schema, metadata, data)
+create_item <- function(table, key, type, schema, date, metadata, data)
 {
   metadata <- jsonlite::toJSON(metadata, auto_unbox = T)
   data <- jsonlite::toJSON(data, auto_unbox = T)
-  response <- http_post(paste0("/data/", table, "/"), body=list(key=key, type=type, schema=schema, metadata=metadata, data=data))
+  response <- http_post(paste0("/data/", table, "/"), body=list(key=key, type=type, schema=schema, date=date, metadata=metadata, data=data))
   if (response$status_code == 400)
   {
     stop("400: L'élément existe déjà ou les données sont mal formées.")
