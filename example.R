@@ -24,7 +24,7 @@ jsondata_filter <- clessnhub::create_filter(data=list(eventID="alpha", intervent
 #
 
 # filtrer pat date (YYYY-MM-DD)
-between_dates_filter = clessnhub::create_filter()
+between_dates_filter = clessnhub::create_filter(date_after = "1992-01-01", date_before = "1995-01-01")
 
 
 # récupérer un éléement
@@ -34,7 +34,10 @@ journalists <- clessnhub::get_items("persons", download_data = F)
 jeanpierre_filter <- clessnhub::create_filter(metadata = list(verifie_par="Jean-Pierre"))
 
 # créer un nouvel élément
-nouveau_journaliste <- clessnhub::create_item("persons", "bob", "Journalist", "v1", "1990-04-30", list(tags=list(coffee="", tea="")), list(gender="male", source="radio-canada"))
+bob <- clessnhub::create_item("persons", "bob", "Journalist", "v1", "1990-04-30", list(tags=list(coffee="", tea="")), list(gender="male", source="radio-canada"))
+gina <- clessnhub::create_item("persons", "gina", "Journalist", "v1", "1993-01-20", list(tags=list(coffee="", tea="")), list(gender="male", source="radio-canada"))
+
+gina_result <- clessnhub::get_items("persons", between_dates_filter)
 
 # est-ce que l'élément existe?
 bob_filter <- clessnhub::create_filter(metadata=list(tags__tea=""))
