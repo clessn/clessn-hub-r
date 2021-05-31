@@ -29,3 +29,10 @@ connect <- function(url="https://clessnhub.apps.valeria.science")
   password <- getPass::getPass("Mot de passe: ")
   login(username, password, url)
 }
+
+#'
+#' @export
+connect_with_token <- function(token, url="https://clessnhub.apps.valeria.science")
+{
+  hub_config <<- list(token=token, url=url, token_prefix="Token")
+}
