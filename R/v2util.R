@@ -11,9 +11,9 @@ http_get <- function(path, options=NULL, verify=T)
   {
     params <- ""
   }
-  token <- config$token
-  token_prefix <- config$token_prefix
-  response <- httr::GET(url=paste0(config$url, path, params), config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
+  token <- hub_config$token
+  token_prefix <- hub_config$token_prefix
+  response <- httr::GET(url=paste0(hub_config$url, path, params), config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
 
   if (response$status_code >= 500)
   {
@@ -27,9 +27,9 @@ http_get <- function(path, options=NULL, verify=T)
 #' @export
 http_delete <- function(path, verify=T)
 {
-  token <- config$token
-  token_prefix <- config$token_prefix
-  response <- httr::DELETE(url=paste0(config$url, path), config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
+  token <- hub_config$token
+  token_prefix <- hub_config$token_prefix
+  response <- httr::DELETE(url=paste0(hub_config$url, path), config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
 
   if (response$status_code >= 500)
   {
@@ -43,9 +43,9 @@ http_delete <- function(path, verify=T)
 #' @export
 http_update <- function(path, body, verify=T)
 {
-  token <- config$token
-  token_prefix <- config$token_prefix
-  response <- httr::PUT(url=paste0(config$url, path), body=body, config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
+  token <- hub_config$token
+  token_prefix <- hub_config$token_prefix
+  response <- httr::PUT(url=paste0(hub_config$url, path), body=body, config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
   return(response)
 }
 
@@ -62,8 +62,8 @@ http_post <- function(path, body, options=NULL, token_prefix="Bearer", verify=T)
   {
     params <- ""
   }
-  token <- config$token
-  token_prefix <- config$token_prefix
-  response <- httr::POST(url=paste0(config$url, path, params), body=body, config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
+  token <- hub_config$token
+  token_prefix <- hub_config$token_prefix
+  response <- httr::POST(url=paste0(hub_config$url, path, params), body=body, config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
   return(response)
 }

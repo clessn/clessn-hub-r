@@ -17,7 +17,7 @@ login <- function(username, password, url="https://clessnhub.apps.valeria.scienc
   }
 
   token <- httr::content(response)$token
-  config <<- list(token=token, url=url, token_prefix="Bearer")
+  hub_config <<- list(token=token, url=url, token_prefix="Bearer")
   message("...connexion réussie!")
 }
 
