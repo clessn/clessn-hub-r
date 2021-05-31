@@ -4,7 +4,8 @@ devtools::install_github("clessn/clessn-hub-r")
 # ------------------------------
 # se connecter au hub 2.0
 clessnhub::connect()
-clessnhub::connect_with_token("86555fce4fcd76a71798ca0f3ce47f0b79fbc31d")
+clessnhub::connect_with_token("c7a978627a813deee43932bc4493b93ef978d505", url="http://localhost:8080")
+clessnhub::log("radarplus", "some data", "some metadata")
 
 # ou (dans la console seulement, ne pas pousser son identifiant sur github)
 clessnhub::login('myusername', '******')
@@ -51,6 +52,7 @@ clessnhub::edit_item("persons", "bob", type="Politician")
 
 # supprimer un élément
 clessnhub::delete_item("persons", "bob")
+clessnhub::delete_item("persons", "gina")
 
 #
 #
