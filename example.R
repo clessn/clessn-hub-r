@@ -4,8 +4,7 @@ devtools::install_github("clessn/clessn-hub-r")
 # ------------------------------
 # se connecter au hub 2.0
 clessnhub::connect()
-clessnhub::connect_with_token("c7a978627a813deee43932bc4493b93ef978d505", url="http://localhost:8080")
-clessnhub::log("radarplus", "some data", "some metadata")
+clessnhub::connect_with_token("af9b7b931fd3a6a96ff2cd742d1c26cee244f810", url="http://localhost")
 
 # ou (dans la console seulement, ne pas pousser son identifiant sur github)
 clessnhub::login('myusername', '******')
@@ -82,3 +81,7 @@ french_only = list(answer_data__ses_lang__answer_value="french")
 data <- clessnhub::get_databank_items("quorum_respondents", filter=list(days=19))
 
 
+# soummetre un log ou Voir les logs
+clessnhub::log("radarplus", "some data", "some metadata")
+
+logs <- clessnhub::get_items("logs", list(app="radarplus", date="2021-05-31"))
