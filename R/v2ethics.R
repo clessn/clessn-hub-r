@@ -76,7 +76,7 @@ get_databank_items <- function(databank, filter=list())
     {
       downloaded_data <- suppressMessages(readr::read_csv(httr::content(response, "text"), na="anonymized", quoted_na=F))
 
-      data <- dplyr::bind_rows(data, downloaded_data)
+      data <- dplyr::bind_rows(data, dplyr::mutate_all(downloaded_data, as.character))
       page <- page + 1
       cat("\r", paste0(nrow(data), "/", count))
     }

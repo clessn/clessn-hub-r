@@ -102,7 +102,7 @@ get_items <- function(table, filter=list(page=1), download_data=TRUE)
     else
     {
       downloaded_data <- suppressMessages(httr::content(response))
-      data <- dplyr::bind_rows(data, downloaded_data)
+      data <- dplyr::bind_rows(data, dplyr::mutate_all(downloaded_data, as.character))
       page <- page + 1
       cat("\r", paste0(nrow(data), "/", count))
     }
