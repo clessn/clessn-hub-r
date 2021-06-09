@@ -1,6 +1,6 @@
 #'
 #' @export
-log <- function(app, data, metadata)
+logToHub <- function(app, data, metadata)
 {
   path <- "/data/entry/"
   response <- http_post(path, list(app=app, data=data, metadata=metadata))
