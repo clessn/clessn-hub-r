@@ -1,7 +1,7 @@
 Package: clessnhub
 Type: Package
 Title: Package d'Accès aux données de la CLESSN
-Version: 2.0.5
+Version: 2.0.6
 Author: Olivier Banville <olivier@clessn.com>
 Maintainer: Olivier Banville <olivier@clessn.com>
 Description:Permet l'accès aux données stockées sur le CLESSN Hub
