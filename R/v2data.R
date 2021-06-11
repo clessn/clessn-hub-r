@@ -13,7 +13,7 @@ list_tables <- function()
 
 #'
 #' @export
-create_filter <- function(key_contains=NULL, key=NULL, uuid=NULL, type=NULL, type_contains=NULL, schema=NULL, schema_contains=NULL, date_after=NULL, date_before=NULL, metadata=list(), data=list())
+create_filter <- function(key_contains=NULL, key=NULL, uuid=NULL, type=NULL, type_contains=NULL, schema=NULL, schema_contains=NULL, metadata=list(), data=list())
 {
   filter <- list()
   if (!is.null(key_contains))
@@ -37,17 +37,11 @@ create_filter <- function(key_contains=NULL, key=NULL, uuid=NULL, type=NULL, typ
   if (!is.null(schema_contains))
     filter$schema_contains <- schema_contains
 
-  if (!is.null(date_after))
-    filter$date_after <- date_after
-
-  if (!is.null(date_before))
-    filter$date_before <- date_before
-
   if (length(data) > 0)
-    filter$data <- paste0(names(data), data, sep=":", collapse=',')
+    filter$data <- paste(names(data), data, sep=":", collapse=',')
 
   if (length(metadata) > 0)
-    filter$metadata <- paste0(names(metadata), metadata, sep=":", collapse=',')
+    filter$metadata <- paste(names(metadata), sep=":", metadata, collapse=',')
   return(filter)
 }
 
@@ -61,6 +55,10 @@ get_items <- function(table, filter=list(page=1), download_data=TRUE)
 
   message("Téléchargement en cours...")
   response <- http_get(paste0("/data/", table, "/"), options=filter)
+  if (response$status_code == 401)
+  {
+    stop("Il y a sans doute une erreur de connection. Connectez-vous de nouveau.")
+  }
   if (response$status_code == 403)
   {
     stop("Une erreur s'est produite. Vous n'avez pas accès à cette resource.")

@@ -6,6 +6,13 @@ devtools::install_github("clessn/clessn-hub-r")
 clessnhub::connect()
 clessnhub::connect_with_token("6d9dec6a9361145ac6eec9e8ce7642852c3942cb")
 
+# Radarplus
+filter <- clessnhub::create_filter(metadata=list(date__gt="2021-06-01"))
+filter <- clessnhub::create_filter(metadata=list(source="tva-nouvelles",date__gt="2021-03-01T00:00:00"))
+data <- clessnhub::get_items("radarplus_articles", filter, download_data=T)
+
+
+
 # ou (dans la console seulement, ne pas pousser son identifiant sur github)
 clessnhub::login('myusername', '******')
 
@@ -33,6 +40,7 @@ journalist_filter <- clessnhub::create_filter(data=list(gender="female", source=
 journalists <- clessnhub::get_items("persons", download_data = F)
 
 jeanpierre_filter <- clessnhub::create_filter(metadata = list(verifie_par="Jean-Pierre"))
+clessnhub::create_filter(type="radio-canada", data=list(author="Louis Blouin"))
 
 # créer un nouvel élément
 bob <- clessnhub::create_item("persons", "bob", "Journalist", "v1", "1990-04-30", list(tags=list(coffee="", tea="")), list(gender="male", source="radio-canada"))
