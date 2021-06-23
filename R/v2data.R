@@ -198,7 +198,7 @@ edit_item <- function(table, key, type=NULL, schema=NULL, metadata=NULL, data=NU
     stop("403: Vous n'avez sans doute pas le droit de modifier cet élément.")
   }
 
-  if (response$status_code == 204)
+  if (response$status_code == 200)
   {
     message("élément modifié")
   }
