@@ -112,11 +112,11 @@ get_items <- function(table, filter=list(page=1), download_data=TRUE)
 
 #'
 #' @export
-create_item <- function(table, key, type, schema, date, metadata, data)
+create_item <- function(table, key, type, schema, metadata, data)
 {
   metadata <- jsonlite::toJSON(metadata, auto_unbox = T)
   data <- jsonlite::toJSON(data, auto_unbox = T)
-  response <- http_post(paste0("/data/", table, "/"), body=list(key=key, type=type, schema=schema, date=date, metadata=metadata, data=data))
+  response <- http_post(paste0("/data/", table, "/"), body=list(key=key, type=type, schema=schema, metadata=metadata, data=data))
   if (response$status_code == 400)
   {
     stop("400: L'élément existe déjà ou les données sont mal formées.")
@@ -143,6 +143,8 @@ create_item <- function(table, key, type, schema, date, metadata, data)
 edit_item <- function(table, key, type=NULL, schema=NULL, metadata=NULL, data=NULL)
 {
   body = list()
+  body$key = key
+
   if (!is.null(type))
     body$type = type
 
@@ -155,7 +157,7 @@ edit_item <- function(table, key, type=NULL, schema=NULL, metadata=NULL, data=NU
   if (!is.null(data))
     body$data <- jsonlite::toJSON(data, auto_unbox = T)
 
-  response <- clessnhub::http_update(paste0("/data/", table, "/", key), body)
+  response <- clessnhub::http_update(paste0("/data/", table, "/", key, "/?format=json&get_data=true"), body)
   if (response$status_code == 400)
   {
     stop("400: les données de l'item sont mal formées.")

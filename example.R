@@ -6,11 +6,29 @@ devtools::install_github("clessn/clessn-hub-r")
 clessnhub::connect()
 clessnhub::connect_with_token("6d9dec6a9361145ac6eec9e8ce7642852c3942cb")
 
+
+# test
+a <- clessnhub::create_item("agoraplus_interventions", key="test", type="test", schema="v1", metadata = list(potato="tomato"), data = list(banana="apple"))
+
+clessnhub::edit_item('agoraplus_interventions', key="test", type="test", schema="v1", metadata = list(potato="radish"), data = list(banana="pear"))
+
+clessnhub::delete_item("agoraplus_interventions", key="test")
+
+
+
+
+
 # Radarplus
+clessnhub::connect()
+f <- clessnhub::create_filter(uuid="a9368e68-a2e3-4f82-b12c-b738582b2775")
+item <- clessnhub::get_items("agoraplus_interventions", f)
+
 filter <- clessnhub::create_filter(metadata=list(date__gt="2021-06-01"))
 filter <- clessnhub::create_filter(metadata=list(source="tva-nouvelles",date__gt="2021-03-01T00:00:00"))
 data <- clessnhub::get_items("radarplus_articles", filter, download_data=T)
 
+filter <- clessnhub::create_filter(metadata=list(date__gt="2019-01-01"))
+data <- clessnhub::get_items("persons", filter, download_data=T)
 
 
 # ou (dans la console seulement, ne pas pousser son identifiant sur github)
@@ -93,3 +111,48 @@ data <- clessnhub::get_databank_items("quorum_respondents", filter=list(days=19)
 clessnhub::log("radarplus", "some data", "some metadata")
 
 logs <- clessnhub::get_items("logs", list(app="radarplus", date="2021-05-31"))
+
+
+
+library(dplyr)
+# configure and download
+clessnhub::v1_configure()
+data <- clessnhub::v1_download_table("agoraplus_warehouse_intervention_items")
+
+# validate no duplicate in raw data
+TRUE %in% duplicated(data$uuid)
+
+# create slug
+dfDeep.hub <- select(data, uuid, eventID, interventionSeqNum, speakerIsMinister, speakerType, speakerParty,
+         speakerCirconscription, speakerSpeechLang, speakerSpeech,
+         speakerFirstName, speakerLastName, speakerFullName) %>%
+  mutate(slug = paste0(eventID, interventionSeqNum))
+
+# validate no duplicate slug, THERE ARE DUPLICATES
+TRUE %in% duplicated(dfDeep.hub$slug)
+
+# Generate frequencies for each slug
+n_occur <- data.frame(table(dfDeep.hub$slug))
+n_occur <- n_occur[n_occur$Freq > 1,]
+
+# Find items that occur more than once
+guilty_elements <- dfDeep.hub[dfDeep.hub$slug %in% n_occur$Var1,]
+
+a <- guilty_elements[duplicated(guilty_elements$slug),]
+for (i in 1:nrow(a))
+{
+  tryCatch(
+    {
+      print(a$uuid[i])
+      clessnhub::v1_delete_item(a$uuid[i], "agoraplus_warehouse_intervention_items")
+      print(i)
+    },
+    error=function(cond)
+    {
+      print(paste("error at", i))
+      return(NA)
+    }
+  )
+
+}
+
