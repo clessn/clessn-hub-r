@@ -112,6 +112,33 @@ get_items <- function(table, filter=list(page=1), download_data=TRUE)
 
 #'
 #' @export
+get_item <- function(table, key)
+{
+  response <- http_get(paste0("/data/", table, "/", key, "/?format=json&get_data=true"))
+  if (response$status_code == 400)
+  {
+    stop("400: Les données sont mal formées.")
+  }
+
+  if (response$status_code == 403)
+  {
+    stop("403: Vous n'avez sans doute pas le droit de voir cet élément")
+  }
+
+  if (response$status_code == 200)
+  {
+    message("élément téléchargé")
+    return(httr::content(response))
+  }
+  else
+  {
+    stop(response$status_code)
+  }
+}
+
+
+#'
+#' @export
 create_item <- function(table, key, type, schema, metadata, data)
 {
   metadata <- jsonlite::toJSON(metadata, auto_unbox = T)
@@ -143,7 +170,6 @@ create_item <- function(table, key, type, schema, metadata, data)
 edit_item <- function(table, key, type=NULL, schema=NULL, metadata=NULL, data=NULL)
 {
   body = list()
-  body$key = key
 
   if (!is.null(type))
     body$type = type
