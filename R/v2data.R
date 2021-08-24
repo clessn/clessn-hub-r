@@ -48,7 +48,7 @@ create_filter <- function(key_contains=NULL, key=NULL, uuid=NULL, type=NULL, typ
 
 #'
 #' @export
-get_items <- function(table, filter=list(page=1), download_data=TRUE)
+get_items <- function(table, filter=list(page=1), download_data=TRUE, max_pages=-1)
 {
 
   filter$format <- "json"
@@ -107,6 +107,11 @@ get_items <- function(table, filter=list(page=1), download_data=TRUE)
       data <- dplyr::bind_rows(data, dplyr::mutate_all(downloaded_data, as.character))
       page <- page + 1
       cat("\r", paste0(nrow(data), "/", count))
+
+      if (max_pages > 0 && page > max_pages)
+      {
+        break
+      }
     }
   }
   message("...Téléchargement complété!")
