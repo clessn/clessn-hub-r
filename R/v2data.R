@@ -97,6 +97,10 @@ get_items <- function(table, filter=list(page=1), download_data=TRUE)
       cat("\n")
       break
     }
+    else if (code != 200)
+    {
+      warning(paste("Erreur",code))
+    }
     else
     {
       downloaded_data <- suppressMessages(httr::content(response))
