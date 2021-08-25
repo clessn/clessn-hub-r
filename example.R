@@ -6,7 +6,6 @@ devtools::install_github("clessn/clessn-hub-r")
 clessnhub::connect()
 clessnhub::connect_with_token("6d9dec6a9361145ac6eec9e8ce7642852c3942cb")
 
-
 # test
 a <- clessnhub::create_item("agoraplus_interventions", key="test", type="test", schema="v1", metadata = list(potato="tomato"), data = list(banana="apple"))
 
