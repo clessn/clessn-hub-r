@@ -123,6 +123,7 @@ get_items <- function(table, filter=list(page=1), download_data=TRUE, max_pages=
 #' @export
 get_item <- function(table, key)
 {
+  message("téléchargement d'un élément...")
   response <- http_get(paste0("/data/", table, "/", key, "/?format=json&get_data=true"))
   if (response$status_code == 400)
   {
@@ -150,6 +151,7 @@ get_item <- function(table, key)
 #' @export
 create_item <- function(table, key, type, schema, metadata, data)
 {
+  message("ajout d'un élément...")
   metadata <- jsonlite::toJSON(metadata, auto_unbox = T)
   data <- jsonlite::toJSON(data, auto_unbox = T)
   response <- http_post(paste0("/data/", table, "/"), body=list(key=key, type=type, schema=schema, metadata=metadata, data=data))
@@ -178,6 +180,7 @@ create_item <- function(table, key, type, schema, metadata, data)
 #' @export
 edit_item <- function(table, key, type=NULL, schema=NULL, metadata=NULL, data=NULL)
 {
+  message("modification d'un élément...")
   body = list()
 
   if (!is.null(type))
@@ -221,6 +224,7 @@ edit_item <- function(table, key, type=NULL, schema=NULL, metadata=NULL, data=NU
 #' @export
 delete_item <- function(table, key)
 {
+  message("suppression d'un élément...")
   response <- clessnhub::http_delete(paste0("/data/", table, "/", key))
   if (response$status_code == 400)
   {

@@ -8,8 +8,4 @@ logToHub <- function(app, data, metadata)
   {
     warning(paste("Pas réussi à logger, erreur", response$status_code))
   }
-  else
-  {
-    cat(paste(app, data, "\n"))
-  }
 }

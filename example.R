@@ -21,7 +21,7 @@ clessnhub::delete_item("agoraplus_interventions", key="test")
 # Radarplus
 clessnhub::connect()
 f <- clessnhub::create_filter(uuid="a9368e68-a2e3-4f82-b12c-b738582b2775")
-item <- clessnhub::get_items("agoraplus_interventions", f)
+item <- clessnhub::get_items("agoraplus_interventions")
 
 filter <- clessnhub::create_filter(metadata=list(date__gt="2021-06-01"))
 filter <- clessnhub::create_filter(metadata=list(source="tva-nouvelles",date__gt="2021-03-01T00:00:00"))
