@@ -13,7 +13,7 @@ http_get <- function(path, options=NULL, verify=T)
   }
   token <- hub_config$token
   token_prefix <- hub_config$token_prefix
-  response <- httr::GET(url=paste0(hub_config$url, path, params), config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
+  response <- httr::GET(url=paste0(hub_config$url, path, params), config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify, timeout(30))
 
   if (response$status_code >= 500)
   {
@@ -29,7 +29,7 @@ http_delete <- function(path, verify=T)
 {
   token <- hub_config$token
   token_prefix <- hub_config$token_prefix
-  response <- httr::DELETE(url=paste0(hub_config$url, path), config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
+  response <- httr::DELETE(url=paste0(hub_config$url, path), config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify, timeout(30))
 
   if (response$status_code >= 500)
   {
@@ -54,7 +54,7 @@ http_update <- function(path, body, verify=T)
   }
   token <- hub_config$token
   token_prefix <- hub_config$token_prefix
-  response <- httr::PATCH(url=paste0(hub_config$url, path), body=body, config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
+  response <- httr::PATCH(url=paste0(hub_config$url, path), body=body, config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify, timeout(30))
   return(response)
 }
 
@@ -83,6 +83,6 @@ http_post <- function(path, body, options=NULL, verify=T)
   }
   token <- hub_config$token
   token_prefix <- hub_config$token_prefix
-  response <- httr::POST(url=paste0(hub_config$url, path, params), body=body, config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
+  response <- httr::POST(url=paste0(hub_config$url, path, params), body=body, config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify, timeout(30))
   return(response)
 }
