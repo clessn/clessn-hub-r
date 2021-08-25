@@ -15,7 +15,9 @@ clessnhub::edit_item('agoraplus_interventions', key="test", type="test", schema=
 clessnhub::delete_item("agoraplus_interventions", key="test")
 
 
-
+# tweets test
+filter <- clessnhub::create_filter(metadata=list(twitterHandle="@LesVertsCanada"), data=list(creationDate__gte="2021-06-01"))
+item <- clessnhub::get_items("tweets", filter=filter)
 
 
 # Radarplus
