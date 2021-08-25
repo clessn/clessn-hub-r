@@ -45,7 +45,7 @@ http_update <- function(path, body, verify=T)
 {
   token <- hub_config$token
   token_prefix <- hub_config$token_prefix
-  response <- httr::PATCH(url=paste0(hub_config$url, path), body=body, encode = "json", config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
+  response <- httr::PATCH(url=paste0(hub_config$url, path), body=body, config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
   return(response)
 }
 
@@ -64,6 +64,6 @@ http_post <- function(path, body, options=NULL, verify=T)
   }
   token <- hub_config$token
   token_prefix <- hub_config$token_prefix
-  response <- httr::POST(url=paste0(hub_config$url, path, params), body=body, encode = "json", config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
+  response <- httr::POST(url=paste0(hub_config$url, path, params), body=body, config=httr::add_headers(Authorization=paste(token_prefix, token)), verify=verify)
   return(response)
 }
